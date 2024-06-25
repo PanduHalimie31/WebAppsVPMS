@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sensor Parkir</title>
+</head>
+<body>
+  <h1>Data Sensor Parkir</h1>
+
+  <div id="sensorData"></div>
+
+  <script type="module">
+    // Import fungsi dari SDK Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-analytics.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js"; // Import Firebase Database module
+
+    // Konfigurasi Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyBO0nIKi_ZwHLE31JQ7WhW7eHbGg42sVtM",
+        authDomain: "test-parkir.firebaseapp.com",
+        databaseURL: "https://test-parkir-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "test-parkir",
+        storageBucket: "test-parkir.appspot.com",
+        messagingSenderId: "812549680741",
+        appId: "1:812549680741:web:c64fdc3382315e7c8c208c",
+        measurementId: "G-79GRS5202F"
+    };
+
+    // Inisialisasi Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const database = getDatabase(app);
+
+    // Fungsi untuk update data pada sensor
+    function updateSensorData(snapshot) {
+      const sensorData = snapshot.val();
+      const sensor1Value = sensorData.sensor_1.jarak_sensor;
+      const sensor2Value = sensorData.sensor_2.jarak_sensor;
+      const sensor3Value = sensorData.sensor_3.jarak_sensor;
+
+      const sensor1Status = sensorData.sensor_1.status_sensor;
+      const sensor2Status = sensorData.sensor_2.status_sensor;
+      const sensor3Status = sensorData.sensor_3.status_sensor;
+
+      const sensorDataDiv = document.getElementById('sensorData');
+      sensorDataDiv.innerHTML = `
+        <p>Jarak Sensor 1 : ${sensor1Value} cm</p>
+        <p>Status Sensor 1: ${sensor3Status}</p>
+
+        <p>Jarak Sensor 2 : ${sensor2Value} cm</p>
+        <p>Status Sensor 2: ${sensor2Status}</p>
+
+        <p>Jarak Sensor 3 : ${sensor3Value} cm</p>
+        <p>Status Sensor 3: ${sensor3Status}</p>
+      `;
+    }
+
+    // Cek perubahan di database realtime Firebase
+    onValue(ref(database, '/'), updateSensorData);
+  </script>
+</body>
+</html>
